@@ -3,6 +3,26 @@ dna_infile_fid = fopen(dna_infile,'rt');
 message = fscanf(dna_infile_fid,'%[ACGT]');
 fclose(dna_infile_fid);
 
+% CountAA = length(strfind(message,'AA'));
+% CountAC = length(strfind(message,'AC'));
+% CountAG = length(strfind(message,'AG'));
+% CountAT = length(strfind(message,'AT'));
+% 
+% CountCA = length(strfind(message,'CA'));
+% CountCC = length(strfind(message,'CC'));
+% CountCG = length(strfind(message,'CG'));
+% CountCT = length(strfind(message,'CT'));
+% 
+% CountGA = length(strfind(message,'GA'));
+% CountGC = length(strfind(message,'GC'));
+% CountGG = length(strfind(message,'GG'));
+% CountGT = length(strfind(message,'GT'));
+% 
+% CountTA = length(strfind(message,'TA'));
+% CountTC = length(strfind(message,'TC'));
+% CountTG = length(strfind(message,'TG'));
+% CountTT = length(strfind(message,'TT'));
+
 CountAA = 0;
 CountAC = 0;
 CountAG = 0;
@@ -24,11 +44,11 @@ CountTG = 0;
 CountTT = 0;
 
 %mapping characters to numbers and counting pairs
-index = length(message);
+index = length(message)
 disp(message)
 j = 1;
 n = 1;
-message_int = zeros(1,84245);
+message_int = zeros(1,168490);
 while j < (index+1)
     if message(j:(j+1)) == 'AA'
         message_int(n) = 1;
@@ -135,7 +155,7 @@ while n < (index_dec+1)
     elseif message_dec_int(n) == 16
         message_dec(k:(k+1)) = 'TT';
     end
-    n = n+1;
+    n = n+1
     k = k+2;
 end
 

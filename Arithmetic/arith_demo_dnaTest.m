@@ -1,4 +1,4 @@
-function Nbits = arith_demo_dna1(dna_infile, bitfile)
+function Nbits = arith_demo_dnaTest(dna_infile, bitfile)
 dna_infile_fid = fopen(dna_infile,'rt');
 message = fscanf(dna_infile_fid,'%[ACGT]');
 fclose(dna_infile_fid);
@@ -9,13 +9,13 @@ CountG = length(find(message=='G'));
 CountT = length(find(message=='T'));
 
 counts = [CountA CountC CountG CountT];
-dna_hist1 = 'dna_hist1.mat';
-save dna_hist1 counts;
+dna_histTest = 'dna_histTest.mat';
+save dna_histTest counts;
 
 %mapping characters to numbers
 index = length(message);
 j = 1;
-message_int = zeros(168490,1);
+message_int = zeros(336980,1);
 while j < (index+1)
     if message(j) == 'A'
         message_int(j) = 1;
@@ -29,11 +29,11 @@ while j < (index+1)
     j = j+1;
 end
 
-encArith(message_int,dna_hist1,bitfile);
+encArith(message_int,dna_histTest,bitfile);
 clear message;
 clear message_int;
 
-message_dec_int = decArith(dna_hist1,bitfile);
+message_dec_int = decArith(dna_histTest,bitfile);
 
 %mapping numbers back to characters
 index_dec= length(message_dec_int);
@@ -53,9 +53,9 @@ while k < (index_dec+1)
 end
 
 Nbits = length(message_dec);
-dec1_chr21_fid = fopen('dec1_chr21.txt','wt');
-fprintf(dec1_chr21_fid,'%s',message_dec);
-fclose(dec1_chr21_fid);
+decTest_chr21_fid = fopen('decTest_chr21.txt','wt');
+fprintf(decTest_chr21_fid,'%s',message_dec);
+fclose(decTest_chr21_fid);
 
 clear k
 clear j
