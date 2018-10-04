@@ -1,0 +1,1 @@
+function [partition, codebook] = design_sq(training_set, codebook, tol, maxiter)
