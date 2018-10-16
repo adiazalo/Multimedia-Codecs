@@ -1,4 +1,4 @@
-function Nbits = encArith(message_int, histfile, outfile);
+function Nbits = encArith(message_int, histfile, outfile)
 load(histfile,'counts');
 Nsymbols = length(message_int);
 message_enc = arithenco(message_int,counts);

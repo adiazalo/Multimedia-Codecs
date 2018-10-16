@@ -7,7 +7,7 @@ end
 
 [index,xq,MSE] = vq(training_set,codebook);
 iter = 1; % count number of iterations
-dMSE = 10*tol+1; % raltive change between iterations
+dMSE = 10*tol+1; % relative change between iterations
 
 while  (iter <= maxiter) && (dMSE > tol)
     for i = 1:M
@@ -19,8 +19,8 @@ while  (iter <= maxiter) && (dMSE > tol)
     [index, xq, newMSE] = vq(training_set,codebook);
     dMSE = abs(newMSE-MSE)/MSE;
     MSE = newMSE;
-    iter = iter + 1;
-    end
+    iter = iter + 1
+end
 
 clear iter;
 clear MSE;

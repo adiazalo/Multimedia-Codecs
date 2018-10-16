@@ -61,14 +61,8 @@ C = ceil(length(xdq)/N);
 ImgVectordq = ones(N,C);
 
 %filling ImgVectordq with xdq elements
-xdqLowerBound = 1;
-xdqHigherBound = N;
 for k = 1:C
-    xdqColumn = xdq(xdqLowerBound:xdqHigherBound)';
-    ImgVectordq(:,k) = xdqColumn;
-    xdqLowerBound = xdqLowerBound + N;
-    xdqHigherBound = xdqHigherBound + N;
-end
+
 imgdq = col2im(ImgVectordq,[N1,N2],[512,512],'distinct');
 imwrite(uint8(imgdq),map,outfile,'BMP');
 

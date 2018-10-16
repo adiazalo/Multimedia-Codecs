@@ -16,13 +16,13 @@ end
 index = zeros(1,xLength/N); %quantization bin indices
 
 %quantize input signal x
-
 xLowBound = 1;
 xHighBound = N;
+k = 1;
 
 MSE_v = ones(1,M);
 xq = ones(1,xLength);
-while xLowBound < (xLength + 1) %go through x
+while xHighBound < (xLength + 1) %go through x
     j = 1;
     while j < (M+1) % got though codebook rows
         xBlock = x(xLowBound:xHighBound);
@@ -34,7 +34,9 @@ while xLowBound < (xLength + 1) %go through x
     end
     [minValue,minIndex] = min(MSE_v);
     xq(xLowBound:xHighBound) = codebook(minIndex,:);
+    index(k) = minIndex;
     
+    k = k + 1; %go to next index box
     xLowBound = xLowBound + N; %update x window
     xHighBound = xHighBound + N;
 end

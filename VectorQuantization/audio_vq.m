@@ -2,12 +2,12 @@ function [Nbits, MSE] = audio_vq(infile, bitfile, outfile, M, N)
 x = audioread(infile);
 codebook = randn(M,N);
 
-codebook = design_vq(x, codebook, 10^(-7), 1000);
+codebook = design_vq(x, codebook, 10^(-7), 3);
 
 save('vq_codebook','codebook');
 
 [index,xq,MSE] = vq(x,codebook);
-
+disp(index(1:10));
 counts = ones(1,length(index));
 i = 1;
 while i<(length(index) + 1)
@@ -28,7 +28,7 @@ index_dec = decArith('vq_hist',bitfile);
 load('vq_codebook','codebook');
 % De-quantizing signal
 xdq = codebook(index_dec);
-disp(max(xq-xdq));
+
 audiowrite(outfile,xdq,16000);
 
 clear index_dec;
