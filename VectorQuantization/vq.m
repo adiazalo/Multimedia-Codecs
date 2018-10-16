@@ -13,28 +13,30 @@ while mod(xLength,N) ~= 0
     xLength = length(x);
 end
 
-index = zeros(1,length(x)/N); %quantization bin indices
-blockNum = length(index);
+index = zeros(1,xLength/N); %quantization bin indices
 
 %quantize input signal x
-% for i = 1:blockNum
-% end
-i = 1;
-j = 1;
-xq = ones(1,N);
-while i < (xLength + 1) %go through x
+
+xLowBound = 1;
+xHighBound = N;
+
+MSE_v = ones(1,M);
+xq = ones(1,xLength);
+while xLowBound < (xLength + 1) %go through x
+    j = 1;
     while j < (M+1) % got though codebook rows
-        blockX = x(i:(i+N));
+        xBlock = x(xLowBound:xHighBound);
         rowCodebook = codebook(j,:);
-        MSE = immse(blockX,rowCodebook);
-        if j = 1
-            xq(i) = MSE; % not right?
-        elseif MSE < xq(i-1)
-            xq(i-1) = MSE;
-        end
-        j = j + 1;
+        MSE = immse(xBlock,rowCodebook);
+        
+        MSE_v(j) = MSE;
+        j = j + 1; %go to next row
     end
-    i = i + N;
+    [minValue,minIndex] = min(MSE_v);
+    xq(xLowBound:xHighBound) = codebook(minIndex,:);
+    
+    xLowBound = xLowBound + N; %update x window
+    xHighBound = xHighBound + N;
 end
 
 distor = immse(x,xq);

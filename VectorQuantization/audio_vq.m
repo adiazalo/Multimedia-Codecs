@@ -4,7 +4,7 @@ codebook = randn(M,N);
 
 codebook = design_vq(x, codebook, 10^(-7), 1000);
 
-save('vq_codebook',codebook);
+save('vq_codebook','codebook');
 
 [index,xq,MSE] = vq(x,codebook);
 
@@ -17,7 +17,7 @@ while i<(length(index) + 1)
     end
     i = i + 1;
 end
-save('vq_hist',counts);
+save('vq_hist','counts');
 
 Nbits = encArith(index,'vq_hist',bitfile);
 
