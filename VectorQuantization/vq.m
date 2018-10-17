@@ -22,12 +22,15 @@ k = 1;
 
 MSE_v = ones(1,M);
 xq = ones(1,xLength);
+
 while xHighBound < (xLength + 1) %go through x
     j = 1;
     while j < (M+1) % got though codebook rows
         xBlock = x(xLowBound:xHighBound);
         rowCodebook = codebook(j,:);
-        MSE = immse(xBlock,rowCodebook);
+        
+        MSE = (norm(xBlock(:)-rowCodebook(:),2).^2)/numel(xBlock);
+        %MSE = immse(xBlock,rowCodebook);
         
         MSE_v(j) = MSE;
         j = j + 1; %go to next row
@@ -41,7 +44,9 @@ while xHighBound < (xLength + 1) %go through x
     xHighBound = xHighBound + N;
 end
 
-distor = immse(x,xq);
+distor = (norm(x(:)-xq(:),2).^2)/numel(x);
+%distor = immse(x,xq);
+
 
 clear xLength;
 clear x;
