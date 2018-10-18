@@ -4,7 +4,7 @@ double img;
 N = N1*N2;
 
 ImgVector = im2col(img,[N1 N2],'distinct'); %ImgVector created
-[r,c] = size(ImgVector)
+[r,c] = size(ImgVector);
 
 %temp_ir = 1 + (c-1).*rand(M,1);
 %temp_ir = randi([1 c],1,M);
@@ -33,9 +33,10 @@ while i < (c+1)
     highBound = highBound + r;
 end
 
-codebook = design_vq(x, codebook, 10^(-7), 5);
+codebook = design_vq(x, codebook, 10^(-7), 1000);
 save('vq_codebook','codebook');
 [index,xq,MSE] = vq(x,codebook);
+
 %counts = ones(1,length(index));
 
 % i = 1;
@@ -69,7 +70,7 @@ for g=1:length(index_dec)
     end
 end
 
-%disp(max(xq-xdq)); %OUT OF MEMORY?
+disp(max(xq-xdq)); %OUT OF MEMORY?
 C = ceil(length(xdq)/N);
 ImgVectordq = ones(N,C); %ImgVectordq created
 
@@ -82,16 +83,8 @@ for k = 1:C
     xdqLowerBound = xdqLowerBound + N;
     xdqHigherBound = xdqHigherBound + N;
 end
-[rows columns] = size(ImgVectordq)
+[rows columns] = size(ImgVectordq);
 imgdq = col2im(ImgVectordq,[N1,N2],[512,512],'distinct');
 imwrite(uint8(imgdq),map,outfile,'BMP');
 
-clear index_dec;
-clear xdq;
-clear ImgVector;
-clear ImgVectordq;
-clear j;
-clear i;
-clear k;
-clear imgdq;
-clear counts;
+clearvars -except Nbits MSE;

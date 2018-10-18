@@ -11,7 +11,7 @@ dMSE = 10*tol+1; % relative change between iterations
 
 while  (iter <= maxiter) && (dMSE > tol)
     for i = 1:M
-        ind = find(index == (i-1));
+        ind = find(index == (i));
         if ~isempty(ind)
             codebook(i,:) = mean(training_set(ind));
         end
