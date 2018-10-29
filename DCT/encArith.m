@@ -1,6 +1,9 @@
 function Nbits = encArith(message_int, histfile, outfile)
 load(histfile,'counts');
 Nsymbols = length(message_int);
+% if ~isequal(message_int, round(message_int))
+%     disp("something else")
+% end  
 message_enc = arithenco(message_int,counts);
 Nbits = length(message_enc);
 
