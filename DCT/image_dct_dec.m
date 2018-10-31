@@ -1,41 +1,33 @@
 function img_dec = image_dct_dec(bitfile,outfile)
 
-load('dct_hist','counts');
-%load('img_header.hdr','quality');
-%header_fid = fopen('img_header.hdr','r');
-%imgR = fread(header_fid);
-%load('img_header.hdr','imgR');
-%load('img_header.hdr','imgC');
+load('dct_hist.mat','counts');
+header_fid = fopen('img_header.hdr','rb');
+header = fread(header_fid,'uint16');
+rows = header(1);
+cols = header(2)
+quality = header(3);
+min_index = (-1)*header(4);
 
-%hardcode values TEST
-quality = 30;
-min_index = -6.1994;
-
-%load('img_header.hdr','min_index');
 [qt, zag] = init_jpeg(quality);
 
-for qIndex = 1:64
-    qtZag = qt(find(zag==qIndex));
-end
-
-imgq_dec = decArith('dct_hist',bitfile);
-
+imgq_dec_262144x1 = decArith('dct_hist',bitfile);
+imgq_dec_1x262144 = imgq_dec_262144x1';
 %% inverse shifting
-
-imgq = reshape(imgq_dec,[4096,64]);
-imgq = imgq - round(abs(min_index));
-
+imgq_dec_4096x64 = reshape(imgq_dec_1x262144',[64,4096])';
+imgq_dec_4096x64 = imgq_dec_4096x64 - 1;
+imgq_dec_4096x64 = imgq_dec_4096x64 - round(abs(min_index));
+[rowsDEC colsDEC] = size(imgq_dec_4096x64);
 %% inverse DICM
-for rIndex = 2:64
-    imgq(rIndex,1) = imgq(rIndex,1) + imgq(rIndex-1,1);
+for rIndex = 4096:-1:2
+    imgq_dec_4096x64(rIndex,1) = imgq_dec_4096x64(rIndex,1) + imgq_dec_4096x64(rIndex-1,1);
 end
-
 %% inverse DCT
 tempBlock8x8 = ones(8);
-inv_img = ones(512);
+img_dec = zeros(512);
 rIndex = 1;
 cIndex = 1;
 nextBlockNum = 1;
+vec = ones(1,64);
 % for nextBlockNum = 1:64
 %     vecq = imgq(nextBlockNum,:);
 %     vec = vecq*qtZag;
@@ -52,18 +44,24 @@ nextBlockNum = 1;
 %     rIndex = rIndex + 1;
 %     cIndex = cIndex + 1;
 % end
+vecq = imgq_dec_4096x64(nextBlockNum,:);
+[r_vecq c_vecq] = size(vecq);
+[r_qt c_qt] = size(qt);
 while rIndex<512
     while cIndex<512
-        vecq = imgq(nextBlockNum,:);
-        vec = vecq*qtZag;
-
+        vecq = imgq_dec_4096x64(nextBlockNum,:);
+        for qIndex = 1:64
+            vec(qIndex) = round(vecq(qIndex).*qt(qIndex));
+        end
+        
         %inverse zig zag
         for zIndex = 1:64
             tempBlock8x8(find(zag==zIndex)) = vec(zIndex);
         end
         
         %inverse DCT
-        inv_img(rIndex:rIndex+7,cIndex:cIndex+7) = tempBlock8x8;
+        img_dec(rIndex:rIndex+7,cIndex:cIndex+7) = idct(tempBlock8x8);
+        %%%img_dec_512x512(rIndex:rIndex+7,cIndex:cIndex+7) = tempBlock8x8;
         cIndex = cIndex + 8;
         
         nextBlockNum = nextBlockNum + 1;
@@ -71,12 +69,16 @@ while rIndex<512
     cIndex = 1;
     rIndex = rIndex + 8;
 end
+%%%D = dctmtx(8); %Calculate the discrete cosine transform matrix
+%%%inv_dct = @(block_struct) D'* block_struct.data * D;
+%%%img_dec = blockproc(img_dec_512x512,[8 8],inv_dct); 
 
 x = linspace(0,1,256)';
 map = [x x x];
-img_dec = idct2(inv_img);
-[r c] = size(img_dec)
-%grayscaleImage = ind2rgb(img_dec, map);
+%%%img_dec = idct2(inv_img);
+img_dec = uint8(img_dec+128);
+sc = imagesc(img_dec);
+impixelregion(sc);
 imwrite(img_dec,map, outfile);
 
 
