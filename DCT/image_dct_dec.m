@@ -4,7 +4,7 @@ load('dct_hist.mat','counts');
 header_fid = fopen('img_header.hdr','rb');
 header = fread(header_fid,'uint16');
 rows = header(1);
-cols = header(2)
+cols = header(2);
 quality = header(3);
 min_index = (-1)*header(4);
 
@@ -16,7 +16,6 @@ imgq_dec_1x262144 = imgq_dec_262144x1';
 imgq_dec_4096x64 = reshape(imgq_dec_1x262144',[64,4096])';
 imgq_dec_4096x64 = imgq_dec_4096x64 - 1;
 imgq_dec_4096x64 = imgq_dec_4096x64 - round(abs(min_index));
-[rowsDEC colsDEC] = size(imgq_dec_4096x64);
 %% inverse DICM
 for rIndex = 4096:-1:2
     imgq_dec_4096x64(rIndex,1) = imgq_dec_4096x64(rIndex,1) + imgq_dec_4096x64(rIndex-1,1);
@@ -28,25 +27,8 @@ rIndex = 1;
 cIndex = 1;
 nextBlockNum = 1;
 vec = ones(1,64);
-% for nextBlockNum = 1:64
-%     vecq = imgq(nextBlockNum,:);
-%     vec = vecq*qtZag;
-%     
-%     %inverse zig zag
-%     for zIndex = 1:64
-%         tempBlock8x8(find(zag==zIndex)) = vec(zIndex);
-%     end
-%     
-%     %inverse DCT
-%     for
-%         inv_img(rIndex:rIndex+7,cIndex:cIndex+7) = tempBlock8x8;
-%     end
-%     rIndex = rIndex + 1;
-%     cIndex = cIndex + 1;
-% end
+
 vecq = imgq_dec_4096x64(nextBlockNum,:);
-[r_vecq c_vecq] = size(vecq);
-[r_qt c_qt] = size(qt);
 while rIndex<512
     while cIndex<512
         vecq = imgq_dec_4096x64(nextBlockNum,:);
@@ -61,9 +43,8 @@ while rIndex<512
         
         %inverse DCT
         img_dec(rIndex:rIndex+7,cIndex:cIndex+7) = idct(tempBlock8x8);
-        %%%img_dec_512x512(rIndex:rIndex+7,cIndex:cIndex+7) = tempBlock8x8;
         cIndex = cIndex + 8;
-        
+       
         nextBlockNum = nextBlockNum + 1;
     end
     cIndex = 1;
@@ -75,10 +56,9 @@ end
 
 x = linspace(0,1,256)';
 map = [x x x];
-%%%img_dec = idct2(inv_img);
 img_dec = uint8(img_dec+128);
-sc = imagesc(img_dec);
-impixelregion(sc);
+% sc = imagesc(img_dec);
+% impixelregion(sc);
 imwrite(img_dec,map, outfile);
 
 
