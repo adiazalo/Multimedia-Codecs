@@ -72,7 +72,7 @@ while cIndex<144
                             % SAD
                             ab = abs(currBlk - window);
                             s = sum(ab(:));
-                            SAD_Matrix(n) = s
+                            SAD_Matrix(n) = s;
                         end
                         if n<SAD_elements
                             n=n+1;
@@ -90,9 +90,12 @@ while cIndex<144
         % coordinates of min SAD
         [r,c] = find(SAD_Matrix == min(SAD_Matrix(SAD_Matrix>0)));
 
-        rMatch = r*blky+1;
-        cMatch = c*blky+1;
-
+        %rMatch = r*blky+1;
+        %cMatch = c*blky+1;
+        
+        rMatch = (r-1)*blky+1;
+        cMatch = (c-1)*blkx+1;
+        
         match = prev(rMatch:rMatch+blky-1, cMatch:cMatch+blkx-1);
         
         mvy(n_mvy)= rMatch;
@@ -113,7 +116,7 @@ while cIndex<144
      cIndex = cIndex + blkx;
 end
 
-clearvars -except [mvx,mvy];
+clearvars -except mvx mvy;
 
 
 
