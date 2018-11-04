@@ -12,6 +12,8 @@ mvx = zeros(currFrRow/blky,currFrCol/blkx);
 mvy = zeros(currFrRow/blky,currFrCol/blkx);
 
 n = 1;
+n_mvy = 1;
+n_mvx = 1;
 rIndex = 1;
 cIndex = 1;
 rWinIndex = 1;
@@ -52,7 +54,7 @@ cWinIndex = 1;
 while cIndex<144
     while rIndex<176
         %extract block from curr
-        currBlk = curr(rIndex:rIndex+blky-1, cIndex:cIndex+blkx-1)
+        currBlk = curr(rIndex:rIndex+blky-1, cIndex:cIndex+blkx-1);
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         while cWinIndex<144
             while rWinIndex<176
@@ -65,7 +67,7 @@ while cIndex<144
 %                         cond1 = abs(rIndex-rWinIndex)
 %                         cond2 = abs(cIndex-cWinIndex)
                         if abs(rIndex-rWinIndex) <= search_range && abs(cIndex-cWinIndex) <= search_range
-                            window = prev(rWinIndex:rWinIndex+blky-1,cWinIndex:cWinIndex+blkx-1)
+                            window = prev(rWinIndex:rWinIndex+blky-1,cWinIndex:cWinIndex+blkx-1);
 
                             % SAD
                             ab = abs(currBlk - window);
@@ -86,22 +88,32 @@ while cIndex<144
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         % coordinates of min SAD
-        [r,c] = find(min(min(SAD_Matrix)));
+        [r,c] = find(SAD_Matrix == min(SAD_Matrix(SAD_Matrix>0)));
 
         rMatch = r*blky+1;
         cMatch = c*blky+1;
 
         match = prev(rMatch:rMatch+blky-1, cMatch:cMatch+blkx-1);
         
-        %mvx
-        %mvy
+        mvy(n_mvy)= rMatch;
+        mvx(n_mvx)= cMatch;
+        
+        n_mvy = n_mvy+1;
+        n_mvx = n_mvx+1;
         
         rIndex = rIndex + blky;
+        
+        % reset values
+        rWinIndex = 1;
+        cWinIndex = 1;
+        n=1;
+        SAD_Matrix = zeros(currFrRow/blky,currFrCol/blkx);
      end
      rIndex = 1;
      cIndex = cIndex + blkx;
 end
 
+clearvars -except [mvx,mvy];
 
 
 
