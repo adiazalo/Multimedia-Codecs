@@ -1,8 +1,12 @@
-function write_Yframe(frameY, outfile)
 %append the frame in frameY to the end of outfile
+function write_Yframe(frameY, outfile)
 
-%convert to column vector
+%converting to column vector
 frameY = frameY(:);
+%or
+% frameY = frameY';
+% frameY = reshape(frameY,[],1);
+
 outfile_fid = fopen(outfile,'a');
 fwrite(outfile_fid,frameY,'ubit8');
 close(outfile_fid);
