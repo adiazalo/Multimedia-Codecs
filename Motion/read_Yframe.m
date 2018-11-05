@@ -7,7 +7,7 @@ function frameY = read_Yframe (infile, height, width, frame_index)
 % frameY = double(readData);
 % clearvars -except frameY;
 
-infile_fid = fopen(infile,'r');
+infile_fid = fopen(infile,'r','b');
 stream = fread(infile_fid,'*uchar');
 length = 1 * width * height;
 
@@ -20,4 +20,5 @@ for iFrame = 1:frame_index
 end
 frameY = frames(:,:,frame_index);
 frameY = double(frameY);
+fclose(infile_fid);
 clearvars -except frameY;

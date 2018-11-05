@@ -4,8 +4,6 @@ function [mcpr,pred] = mc_prediction(prev,curr,mvx,mvy)
 [rV,cV] = size(mvx);
 blky = rFrame/rV;
 blkx = cFrame/cV;
-% blkx = zeros(rBlk,cBlk);
-% blky = zeros(rBlk,cBlk);
 mcpr = zeros(rFrame,cFrame);
 pred = zeros(rFrame,cFrame);
 
@@ -17,16 +15,14 @@ while cIndex<cFrame
         %extract block from curr
         currBlk = curr(rIndex:rIndex+blky-1, cIndex:cIndex+blkx-1);
         
-        %exrtact the block from prev
+        %extract the block from prev
 %         xComp = mvx(n);
 %         yComp = mvy(n);
 %         rPrevIndex = (yComp-1)*blky+1;
 %         cPrevIndex = (xComp-1)*blkx+1;
 
-        disp(cIndex)
-        disp(rIndex)
-        cPrevIndex = cIndex-mvx(n)
-        rPrevIndex = rIndex-mvy(n)
+        cPrevIndex = cIndex-mvx(n);
+        rPrevIndex = rIndex-mvy(n);
         
         %store previous blk in in same location where current blk is in curr
         prevBlk = prev(rPrevIndex:rPrevIndex+blky-1, cPrevIndex:cPrevIndex+blkx-1);
@@ -42,6 +38,7 @@ while cIndex<cFrame
     cIndex = cIndex + blkx;
 end
 
-k = mat2gray(pred);
-figure;
-imshow(k);
+write_Yframe(pred, 'foreman_qcif_pred_frame.y');
+% k = mat2gray(pred);
+% figure;
+% imshow(k);

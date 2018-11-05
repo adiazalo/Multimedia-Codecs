@@ -37,6 +37,11 @@ while cIndex<176
                     if SAD_Matrix(n) == 0
                         SAD_Matrix(n) = 1;
                     end
+                    
+                    %test
+                    if rIndex == 41 && cIndex == 41
+                        Test = SAD_Matrix;
+                    end
                 end
                 
                 if n<SAD_elements
@@ -76,8 +81,8 @@ while cIndex<176
         mvy(n_mvy)= rIndex-rMatch;
         mvx(n_mvx)= cIndex-cMatch;
         
-        %mvy(n_mvy)= rMatch-rIndex;
-        %mvx(n_mvx)= cMatch-cIndex;
+%         mvy(n_mvy)= rMatch-rIndex;
+%         mvx(n_mvx)= cMatch-cIndex;
 
         n_mvy = n_mvy+1;
         n_mvx = n_mvx+1;
@@ -93,7 +98,8 @@ while cIndex<176
      rIndex = 1;
      cIndex = cIndex + blkx;
 end
-quiver(mvx,mvy)
+%  quiver(mvx,mvy)
+% disp(Test)
 clearvars -except mvx mvy;
 
 

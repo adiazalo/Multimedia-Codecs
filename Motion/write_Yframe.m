@@ -2,11 +2,11 @@
 function write_Yframe(frameY, outfile)
 
 %converting to column vector
-frameY = frameY(:);
+%frameY = frameY(:);
 %or
-% frameY = frameY';
-% frameY = reshape(frameY,[],1);
+ frameY = frameY';
+ frameY = reshape(frameY,[],1);
 
 outfile_fid = fopen(outfile,'a');
 fwrite(outfile_fid,frameY,'ubit8');
-close(outfile_fid);
+fclose(outfile_fid);
