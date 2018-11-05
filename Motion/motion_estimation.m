@@ -18,68 +18,30 @@ rIndex = 1;
 cIndex = 1;
 rWinIndex = 1;
 cWinIndex = 1;
-%while cIndex<144
-%    while rIndex<176
-%         %extract block from curr
-%         currBlk = curr(rIndex:rIndex+blky-1, cIndex:cIndex+blkx-1); 
-%         prevBlk = prev(rIndex:rIndex+blky-1, cIndex:cIndex+blkx-1);
-%         
-%         n = 1;
-%         while n <= nBlks
-%             %check if window is in allowed space 
-%             if rIndex-vRange >= 1 && rIndex-vRange+blky <= currFrRow
-%                 if cIndex-hRange >=1 && cIndex-hRange+blkx <= currFrCol
-%                     
-%                     window = prev(rIndex-vRange:rIndex-vRange+blky-1,cIndex-hRange:cIndex-hRange+blkx-1);
-% 
-%                     % SAD
-%                     ab = abs(currBlk - window);
-%                     SAD_Matrix(n) = sum(ab(:));
-%                     n=n+1;
-%                     end
-%                 else
-%                     hRange = hRange - 1;
-%                 end
-%             else
-%                 vRange = vRange - 1;
-%         end
-%             
-% 
-%         end
-%          rIndex = rIndex + blky;
-%      end
-%      rIndex = 1;
-%      cIndex = cIndex + blkx;
-% end
-while cIndex<144
-    while rIndex<176
+while cIndex<176
+    while rIndex<144
         %extract block from curr
         currBlk = curr(rIndex:rIndex+blky-1, cIndex:cIndex+blkx-1);
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        while cWinIndex<144
-            while rWinIndex<176
+        while cWinIndex<176
+            while rWinIndex<144
                 
-%                 %check if window is in allowed space
-%                 if rWinIndex-vRange >= 1 && rWinIndex-vRange+blky <= currFrRow
-%                     if cWinIndex-hRange >=1 && cWinIndex-hRange+blkx <= currFrCo
-                        
-                        % check if window is in range
-%                         cond1 = abs(rIndex-rWinIndex)
-%                         cond2 = abs(cIndex-cWinIndex)
-                        if abs(rIndex-rWinIndex) <= search_range && abs(cIndex-cWinIndex) <= search_range
-                            window = prev(rWinIndex:rWinIndex+blky-1,cWinIndex:cWinIndex+blkx-1);
+                % check if window is in range
+                if abs(rIndex-rWinIndex) <= search_range && abs(cIndex-cWinIndex) <= search_range
+                    window = prev(rWinIndex:rWinIndex+blky-1,cWinIndex:cWinIndex+blkx-1);
 
-                            % SAD
-                            ab = abs(currBlk - window);
-                            s = sum(ab(:));
-                            SAD_Matrix(n) = s;
-                        end
-                        if n<SAD_elements
-                            n=n+1;
-                        end
-                    %end
-                %end
+                    % SAD
+                    ab = abs(double(window(:)) - double(currBlk(:)));
+                    s = sum(ab(:));                            
+                    SAD_Matrix(n) = s;
+                    if SAD_Matrix(n) == 0
+                        SAD_Matrix(n) = 1;
+                    end
+                end
                 
+                if n<SAD_elements
+                    n=n+1;
+                end
                 rWinIndex = rWinIndex + blky;
             end
             rWinIndex = 1;
@@ -89,6 +51,18 @@ while cIndex<144
         
         % coordinates of min SAD
         [r,c] = find(SAD_Matrix == min(SAD_Matrix(SAD_Matrix>0)));
+        
+        [rR, rC] = size(r);
+        [cR, cC] = size(c);
+        
+        if rR > 1
+            r = r(1);
+        end
+        if cR > 1
+            c = c(1);
+        end
+        
+        SAD_Matrix(SAD_Matrix==1) = 0;
 
         %rMatch = r*blky+1;
         %cMatch = c*blky+1;
@@ -98,9 +72,13 @@ while cIndex<144
         
         match = prev(rMatch:rMatch+blky-1, cMatch:cMatch+blkx-1);
         
-        mvy(n_mvy)= rMatch;
-        mvx(n_mvx)= cMatch;
+        %store changes between curr and prev
+        mvy(n_mvy)= rIndex-rMatch;
+        mvx(n_mvx)= cIndex-cMatch;
         
+        %mvy(n_mvy)= rMatch-rIndex;
+        %mvx(n_mvx)= cMatch-cIndex;
+
         n_mvy = n_mvy+1;
         n_mvx = n_mvx+1;
         
@@ -115,8 +93,10 @@ while cIndex<144
      rIndex = 1;
      cIndex = cIndex + blkx;
 end
-
+quiver(mvx,mvy)
 clearvars -except mvx mvy;
+
+
 
 
 

@@ -2,8 +2,8 @@ function [mcpr,pred] = mc_prediction(prev,curr,mvx,mvy)
 
 [rFrame,cFrame] = size(curr);
 [rV,cV] = size(mvx);
-blky = rFrame/rV
-blkx = cFrame/cV
+blky = rFrame/rV;
+blkx = cFrame/cV;
 % blkx = zeros(rBlk,cBlk);
 % blky = zeros(rBlk,cBlk);
 mcpr = zeros(rFrame,cFrame);
@@ -23,8 +23,10 @@ while cIndex<cFrame
 %         rPrevIndex = (yComp-1)*blky+1;
 %         cPrevIndex = (xComp-1)*blkx+1;
 
-        cPrevIndex = mvx(n);
-        rPrevIndex = mvy(n);
+        disp(cIndex)
+        disp(rIndex)
+        cPrevIndex = cIndex-mvx(n)
+        rPrevIndex = rIndex-mvy(n)
         
         %store previous blk in in same location where current blk is in curr
         prevBlk = prev(rPrevIndex:rPrevIndex+blky-1, cPrevIndex:cPrevIndex+blkx-1);
@@ -39,3 +41,7 @@ while cIndex<cFrame
     rIndex = 1;
     cIndex = cIndex + blkx;
 end
+
+k = mat2gray(pred);
+figure;
+imshow(k);
