@@ -20,4 +20,4 @@ end
 plot(x,PSNR,'b')
 xlabel('Frame Number');
 ylabel('PSNR (dB)');
-title('Mean Square Error between the current and the predicted frame');
+title('PSNR of predicted frames');

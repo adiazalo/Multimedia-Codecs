@@ -98,7 +98,7 @@ while cIndex<176
      rIndex = 1;
      cIndex = cIndex + blkx;
 end
-%  quiver(mvx,mvy)
+% quiver(mvx,mvy)
 % disp(Test)
 clearvars -except mvx mvy;
 
